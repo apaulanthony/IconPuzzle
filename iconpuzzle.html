@@ -2,11 +2,13 @@
 <html>
     <head>
         <title>Icon Puzzle</title>
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous" /> 
+		<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous" />
         <style type="text/css">
 html, body{
     text-align: center;
     font-size: 16px;
+	font-family: 'Ubuntu', sans-serif;
 }
 
 #icon {
@@ -15,11 +17,12 @@ html, body{
 
 #icon.hide {
     display: none;
-    font-size: 0.8em;
+	font-size: 12px;
 }
+
 #icon.show {
     display: block;
-    font-size: 3em;
+    font-size: 3em !important;
 }
 
 #outputTable {
@@ -103,7 +106,7 @@ icon = (function() {
             height, width, pixelData, x, y,
             map = {hint: {x: [[0]], y: [[0]]}, mask: []};
 
-        height = width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")); // px equivilent of 1em or whatever icon height is 
+        height = width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")); // px equivalent of 1em or whatever icon height is 
 
         //Prepare canvas
         tCtx.canvas.width = width;
@@ -245,11 +248,11 @@ icon = (function() {
             Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column. Click on a cell to colour it in. If you want a hint as to what you're aiming for click on "Show".
         </p>
         <div>
-            <span class="hideIcon" id="icon"></span>
+            <span class="hide" id="icon"></span>
         </div>
 
         <div>
-            <!-- <input type="number" value="16" min="8" onchange="document.getElementById('icon').style.fontSize = this.value + 'px';" /> -->
+            <input type="number" value="12" min="8" onchange="document.getElementById('icon').style.fontSize = this.value + 'px';" />
             <button onclick="icon.newIcon('icon', 'outputTable'); return false">New</button>
             <button onclick="icon.showIcon('icon'); return false">Show</button>
         </div>
