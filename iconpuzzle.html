@@ -17,48 +17,48 @@ html, body{
 }
 
 #icon.show {
-    display: block;
-    font-size: 3em !important;
+    display: inline-block;
+    font-size: 1em !important;
 }
 
-#outputTable {
+#outputGrid {
     margin: auto auto;
     overflow: hidden;
 }
 
-#outputTable tr:hover {
+#outputGrid tr:hover {
     background-color: #ffa;
 }
 
-#outputTable th, 
-#outputTable td {
+#outputGrid th, 
+#outputGrid td {
     position: relative;
     border: 1px;
 }
 
-#outputTable th {
-    background: grey;
+#outputGrid th {
+    background: silver;
 }
 
-#outputTable td {
+#outputGrid td {
     height: 2em;
     width: 2em;
 }
 
-#outputTable:firchChild th {
+#outputGrid table:firchChild th {
     height: 5em;
 }
 
-#outputTable tr:firchChild {
+#outputGrid tr:firchChild {
     width: 5em; 
 }
 
-#outputTable td:hover {
+#outputGrid td:hover {
     background-color: orange;
 }
 
-#outputTable td:hover::after,
-#outputTable th:hover::after {
+#outputGrid td:hover::after,
+#outputGrid th:hover::after {
   content: "";
   position: absolute;
   background-color: #ffa;
@@ -69,27 +69,56 @@ html, body{
   z-index: -1;
 }
 
-#outputTable td.selected {
+#outputGrid td.selected {
     background-color: green;
+}
+
+#outputGrid.show td.selected {
+    background-color: red;
+}
+
+#outputGrid.show td.answer {
+    background-color: red;
+}
+
+#outputGrid.show td.answer.selected {
+    background-color: black;
 }
         </style>
         <script type="text/javascript">
 // <![CDATA[
 icon = (function() {
     var icons = [
-        'fas fa-camera-retro',
+        'fas fa-anchor',
         'fab fa-android',
         'fab fa-apple',
-        'fas fa-beer',
-        'fas fa-bolt',
-        'fas fa-anchor',
+        'fas fa-bath',
         'fas fa-bed',
+        'fas fa-beer',
         'fas fa-birthday-cake',
-        'fas fa-bug'
+        'fas fa-bolt',
+        'fas fa-bug',
+        'fas fa-camera-retro',
+        'fas fa-chess-board',
+        'fas fa-chess-rook',
+        'fas fa-chess-queen',
+        'fas fa-cog',
+        'fas fa-cogs',
+        'fas fa-cubes',
+        'fab fa-fort-awesome',
+        'fas fa-gamepad',
+        'fas fa-music',
+        'fas fa-paper-plane',
+        'fas fa-paperclip',
+        'fas fa-paw',
+        'fas fa-shield-alt',
+        'fas fa-star',
+        'fas fa-tree',
+        'fas fa-trophy'
     ];
 
     function setRandom (icon) {
-        icon.className = "hide " + icons[Math.floor(Math.random() * icons.length)];
+        icon.className = icons[Math.floor(Math.random() * icons.length)];
     }
 
     function selected () {
@@ -181,25 +210,11 @@ icon = (function() {
         return map;      
     }
 
-    return function (element, tableName) {
-        var icon = (typeof element === 'string' && document.getElementById(element)) || element,
-            table = typeof tableName === 'string' && document.getElementById(tableName),
-            answerMap,
-            tr, th;
+    function buildTable (answerMap) {
+        var table = document.createElement("table"),
+            tr = table.appendChild(document.createElement('tr')),
+            th = document.createElement('th');
 
-        setRandom(icon);
-        answerMap = convertToMap(icon);
-
-        if (table) {
-            table.parentElement.removeChild(table);
-        }
-
-        table = document.createElement("table");
-        table.id = tableName;
-        icon.parentElement.insertBefore(table, icon);
-        
-        tr = table.appendChild(document.createElement('tr'));
-        th = document.createElement('th');
         th.innerText = answerMap.hint.x.length + '/' + answerMap.hint.y.length;
         tr.appendChild(th);
 
@@ -209,38 +224,54 @@ icon = (function() {
             tr.appendChild(th);
         });
 
-        answerMap.hint.y.forEach(function (header) {
+        answerMap.mask.forEach(function (row, y) {
             tr = table.appendChild(document.createElement('tr'));
             th = document.createElement('th');
-            th.innerText = header.join(", ");
+            th.innerText = answerMap.hint.y[y].join(", ");
             tr.appendChild(th);
 
-            answerMap.hint.x.forEach(function (header) {
+            row.forEach(function(col, x) {
                 var td = document.createElement("td");
-    
+                    
+                if (answerMap.mask[y][x]) {
+                    td.className = "answer";
+                }
                 td.addEventListener("click", selected);
 
                 tr.appendChild(td);
             });
         });
+
+        return table;
+    }
+
+    return function (element, parentName) {
+        var icon = (typeof element === 'string' && document.getElementById(element)) || element,
+            tableParent = typeof parentName === 'string' && document.getElementById(parentName);
+
+        icon.classList.remove("show");
+        tableParent.classList.remove("show");
+
+        setRandom(icon);
+        tableParent.innerHTML = "";
+        tableParent.appendChild(buildTable(convertToMap(icon)));     
     }
 }());
 // ]]>
         </script>
     </head>
-    <body onload="icon('icon', 'outputTable')">
+    <body onload="icon('icon', 'outputGrid')">
         <h1>Icon Puzzle</h1>
         <p>
             Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column. Click on a cell to colour it in. If you want a hint as to what you're aiming for click on "Show".
         </p>
-        <div>
-            <span id="icon"></span>
-        </div>
+
+        <div id="outputGrid"></div>
 
         <div>
             <input type="number" value="12" min="8" onchange="document.getElementById('icon').style.fontSize = this.value + 'px';" />
-            <button onclick="icon('icon', 'outputTable'); return false">New</button>
-            <button onclick="document.getElementById('icon').classList.toggle('show'); return false">Show</button>
+            <button onclick="icon('icon', 'outputGrid'); return false">New</button>
+            <button onclick="document.getElementById('icon').classList.toggle('show'); document.getElementById('outputGrid').classList.toggle('show'); return false">Show <span id="icon"></span></button>
         </div>
     </body>
 </html>
