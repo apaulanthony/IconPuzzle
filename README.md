@@ -1,3 +1,3 @@
 # IconPuzzle
 
-https://github.com/apaulanthony/IconPuzzle/master/iconpuzzle.html
+https://htmlpreview.github.io/?https://github.com/apaulanthony/IconPuzzle/master/iconpuzzle.html
