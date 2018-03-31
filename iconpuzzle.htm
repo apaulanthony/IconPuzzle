@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Icon Puzzle</title>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous" /> 
+        <style type="text/css">
+html, body{
+    text-align: center;
+    font-size: 16px;
+}
+
+#icon {
+    margin: 0.5em;
+}
+
+#icon.hide {
+    display: none;
+    font-size: 0.8em;
+}
+#icon.show {
+    display: block;
+    font-size: 3em;
+}
+
+#outputTable {
+    margin: auto auto;
+    overflow: hidden;
+}
+
+#outputTable tr:hover {
+    background-color: #ffa;
+}
+
+#outputTable th, 
+#outputTable td {
+    position: relative;
+    border: 1px;
+}
+
+#outputTable th {
+    background: grey;
+}
+
+#outputTable td {
+    height: 2em;
+    width: 2em;
+}
+
+#outputTable:firchChild th {
+    height: 5em;
+}
+
+#outputTable tr:firchChild {
+    width: 5em; 
+}
+
+#outputTable td:hover {
+    background-color: orange;
+}
+
+#outputTable td:hover::after,
+#outputTable th:hover::after {
+  content: "";
+  position: absolute;
+  background-color: #ffa;
+  left: 0;
+  top: -5000px;
+  height: 10000px;
+  width: 100%;
+  z-index: -1;
+}
+
+#outputTable td.selected {
+    background-color: green;
+}
+        </style>
+        <script type="text/javascript">
+// <![CDATA[
+icon = (function() {
+    var icons = [
+        'fas fa-camera-retro',
+        'fab fa-android',
+        'fab fa-apple',
+        'fas fa-beer',
+        'fas fa-bolt',
+        'fas fa-anchor',
+        'fas fa-bed',
+        'fas fa-birthday-cake',
+        'fas fa-bug'
+    ];
+
+    function setRandom (icon) {
+        icon.className = "hide " + icons[Math.floor(Math.random() * icons.length)];
+    }
+
+    function selected () {
+        this.classList.toggle("selected");
+    }
+
+    function convertToMap (icon) {
+        var text = window.getComputedStyle(icon, ":before"),
+            tCtx = document.createElement("canvas").getContext('2d'),
+            height, width, pixelData, x, y,
+            map = {hint: {x: [[0]], y: [[0]]}, mask: []};
+
+        height = width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")); // px equivilent of 1em or whatever icon height is 
+
+        //Prepare canvas
+        tCtx.canvas.width = width;
+        tCtx.canvas.height = height;
+        tCtx.fillStyle = 'white';
+        tCtx.fillRect(0, 0, width, height);
+
+        //Draw text icon on to canvas
+        tCtx.font = text.font;
+        tCtx.textAlign = 'center'
+        tCtx.textBaseline = "middle";
+        tCtx.fillStyle = 'black';
+        tCtx.fillText(JSON.parse(text.content), width / 2, height / 2);
+        
+        //console.log(tCtx.canvas.toDataURL());
+
+        pixelData = tCtx.getImageData(0, 0, width, height).data
+
+        map.mask = new Array(height); 
+        map.hint.y = new Array(height);
+        map.hint.x = new Array(width);
+
+        // Invert colours of pixel as "on" if any individual byte is
+        // more than half way. We're effectively reducing the bit-depth
+        // to 1. 
+        for (i = 0; i < pixelData.length; i += 4) {
+            y = Math.floor((i / 4) / width);
+            x = (i / 4) % width;
+
+            if (!map.mask[y]) {
+               map.mask[y] = (new Array(width)).fill(false);
+            }
+
+            map.mask[y][x] = (
+                   ((255 - pixelData[i + 0]) >= 128)
+                || ((255 - pixelData[i + 1]) >= 128)
+                || ((255 - pixelData[i + 2]) >= 128)
+                || ((255 - pixelData[i + 3]) >= 128)
+            );
+
+            //Count consequitive cells
+            // First ensure there are appropriate arrys to increment, creating them if necessary
+            if (!map.hint.x[x]) {
+                map.hint.x[x] = [0]
+            }
+
+            if (!map.hint.y[y]) {
+                map.hint.y[y] = [0];
+            }
+
+            if (map.mask[y][x]) {
+                // For true values, simply bumpt up previous value
+                map.hint.x[x][map.hint.x[x].length - 1] += 1;
+                map.hint.y[y][map.hint.y[y].length - 1] += 1;
+            } else {
+                // For false values, add start a new count unless it's already at 0
+                if (map.hint.x[x][map.hint.x[x].length - 1]) {
+                    map.hint.x[x].push(0);
+                }
+
+                if (map.hint.y[y][map.hint.y[y].length - 1]) {
+                    map.hint.y[y].push(0);
+                }
+            }
+        }
+
+        //Remove trailing 0 from counts
+        [map.hint.x, map.hint.y].forEach(function (hint) {
+            hint.forEach(function (item) {
+                if (item.length > 1 && !item[item.length - 1]) {
+                    item.pop(); 
+                }
+            });
+        });
+
+        return map;      
+    }
+
+
+    return {
+        newIcon: function (element, tableName) {
+            var icon = (typeof element === 'string' && document.getElementById(element)) || element,
+                table = typeof tableName === 'string' && document.getElementById(tableName),
+                answerMap,
+                tr, th;
+
+            setRandom(icon);
+            answerMap = convertToMap(icon);
+
+            if (table) {
+                table.parentElement.removeChild(table);
+            }
+
+            table = document.createElement("table");
+            table.id = tableName;
+            icon.parentElement.insertBefore(table, icon);
+            
+            tr = table.appendChild(document.createElement('tr'));
+            th = document.createElement('th');
+            th.innerText = answerMap.hint.x.length + '/' + answerMap.hint.y.length;
+            tr.appendChild(th);
+
+            answerMap.hint.x.forEach(function (header) {
+                th = document.createElement("th");
+                th.innerText = header.join(", ");
+                tr.appendChild(th);
+            });
+
+            answerMap.hint.y.forEach(function (header) {
+                tr = table.appendChild(document.createElement('tr'));
+                th = document.createElement('th');
+                th.innerText = header.join(", ");
+                tr.appendChild(th);
+
+                answerMap.hint.x.forEach(function (header) {
+                    var td = document.createElement("td");
+        
+                    td.addEventListener("click", selected);
+
+                    tr.appendChild(td);
+                });
+            });
+        },
+
+        showIcon: function (element) {
+            var icon = (typeof element === 'string' && document.getElementById(element)) || element;;
+
+            icon.classList.add('show');
+            icon.classList.remove('hide');
+        }
+    }
+}());
+// ]]>
+        </script>
+    </head>
+    <body onload="icon.newIcon('icon', 'outputTable')">
+        <h1>Icon Puzle</h1>
+        <p>
+            Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column. Click on the cell to colour it in.
+        </p>
+        <div>
+            <span class="hideIcon" id="icon"></span>
+        </div>
+
+        <div>
+            <button onclick="icon.newIcon('icon', 'outputTable'); return false">New</button>
+            <button onclick="icon.showIcon('icon'); return false">Show</button>
+        </div>
+    </body>
+</html>
