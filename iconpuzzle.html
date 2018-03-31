@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Icon Puzzle</title>
-		<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" />
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous" />
         <style type="text/css">
 html, body{
@@ -12,10 +12,6 @@ html, body{
 }
 
 #icon {
-    margin: 0.5em;
-}
-
-#icon.hide {
     display: none;
 	font-size: 12px;
 }
@@ -185,76 +181,66 @@ icon = (function() {
         return map;      
     }
 
+    return function (element, tableName) {
+        var icon = (typeof element === 'string' && document.getElementById(element)) || element,
+            table = typeof tableName === 'string' && document.getElementById(tableName),
+            answerMap,
+            tr, th;
 
-    return {
-        newIcon: function (element, tableName) {
-            var icon = (typeof element === 'string' && document.getElementById(element)) || element,
-                table = typeof tableName === 'string' && document.getElementById(tableName),
-                answerMap,
-                tr, th;
+        setRandom(icon);
+        answerMap = convertToMap(icon);
 
-            setRandom(icon);
-            answerMap = convertToMap(icon);
+        if (table) {
+            table.parentElement.removeChild(table);
+        }
 
-            if (table) {
-                table.parentElement.removeChild(table);
-            }
+        table = document.createElement("table");
+        table.id = tableName;
+        icon.parentElement.insertBefore(table, icon);
+        
+        tr = table.appendChild(document.createElement('tr'));
+        th = document.createElement('th');
+        th.innerText = answerMap.hint.x.length + '/' + answerMap.hint.y.length;
+        tr.appendChild(th);
 
-            table = document.createElement("table");
-            table.id = tableName;
-            icon.parentElement.insertBefore(table, icon);
-            
+        answerMap.hint.x.forEach(function (header) {
+            th = document.createElement("th");
+            th.innerText = header.join(", ");
+            tr.appendChild(th);
+        });
+
+        answerMap.hint.y.forEach(function (header) {
             tr = table.appendChild(document.createElement('tr'));
             th = document.createElement('th');
-            th.innerText = answerMap.hint.x.length + '/' + answerMap.hint.y.length;
+            th.innerText = header.join(", ");
             tr.appendChild(th);
 
             answerMap.hint.x.forEach(function (header) {
-                th = document.createElement("th");
-                th.innerText = header.join(", ");
-                tr.appendChild(th);
+                var td = document.createElement("td");
+    
+                td.addEventListener("click", selected);
+
+                tr.appendChild(td);
             });
-
-            answerMap.hint.y.forEach(function (header) {
-                tr = table.appendChild(document.createElement('tr'));
-                th = document.createElement('th');
-                th.innerText = header.join(", ");
-                tr.appendChild(th);
-
-                answerMap.hint.x.forEach(function (header) {
-                    var td = document.createElement("td");
-        
-                    td.addEventListener("click", selected);
-
-                    tr.appendChild(td);
-                });
-            });
-        },
-
-        showIcon: function (element) {
-            var icon = (typeof element === 'string' && document.getElementById(element)) || element;;
-
-            icon.classList.add('show');
-            icon.classList.remove('hide');
-        }
+        });
     }
 }());
 // ]]>
         </script>
     </head>
-    <body onload="icon.newIcon('icon', 'outputTable')">
+    <body onload="icon('icon', 'outputTable')">
         <h1>Icon Puzzle</h1>
         <p>
             Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column. Click on a cell to colour it in. If you want a hint as to what you're aiming for click on "Show".
         </p>
         <div>
-            <span class="hide" id="icon"></span>
+            <span id="icon"></span>
         </div>
 
         <div>
             <input type="number" value="12" min="8" onchange="document.getElementById('icon').style.fontSize = this.value + 'px';" />
-            <button onclick="icon.newIcon('icon', 'outputTable'); return false">New</button>
-            <button onclick="icon.showIcon('icon'); return false">Show</button>
+            <button onclick="icon('icon', 'outputTable'); return false">New</button>
+            <button onclick="document.getElementById('icon').classList.toggle('show'); return false">Show</button>
         </div>
     </body>
 </html>
