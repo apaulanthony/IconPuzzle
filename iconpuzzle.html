@@ -240,15 +240,16 @@ icon = (function() {
         </script>
     </head>
     <body onload="icon.newIcon('icon', 'outputTable')">
-        <h1>Icon Puzle</h1>
+        <h1>Icon Puzzle</h1>
         <p>
-            Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column. Click on the cell to colour it in.
+            Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column. Click on a cell to colour it in. If you want a hint as to what you're aiming for click on "Show".
         </p>
         <div>
             <span class="hideIcon" id="icon"></span>
         </div>
 
         <div>
+            <!-- <input type="number" value="16" min="8" onchange="document.getElementById('icon').style.fontSize = this.value + 'px';" /> -->
             <button onclick="icon.newIcon('icon', 'outputTable'); return false">New</button>
             <button onclick="icon.showIcon('icon'); return false">Show</button>
         </div>
