@@ -11,6 +11,10 @@ html, body{
 	font-family: 'Ubuntu', sans-serif;
 }
 
+p {
+	text-align: left;
+}
+
 #icon {
 	display: none;
 	font-size: 12px;
@@ -21,7 +25,7 @@ html, body{
 	font-size: 1em !important;
 }
 
-#outputGrid {
+#outputGrid table {
 	margin: auto auto;
 	overflow: hidden;
 }
@@ -34,23 +38,21 @@ html, body{
 #outputGrid td {
 	position: relative;
 	border: 1px;
+	height: 2em;
+	width: 2em;
+	transition: all 0.5s ease;
 }
 
 #outputGrid th {
 	background: silver;
 }
 
-#outputGrid td {
-	height: 2em;
-	width: 2em;
+#outputGrid table tr:first-child th {
+	height: 3em;
 }
 
-#outputGrid table:firchChild th {
-	height: 5em;
-}
-
-#outputGrid tr:firchChild {
-	width: 5em;
+#outputGrid tr th:first-child {
+	width: 3em; 
 }
 
 #outputGrid td:hover {
@@ -111,6 +113,7 @@ icon = (function() {
 		'fas fa-paper-plane',
 		'fas fa-paperclip',
 		'fas fa-paw',
+		'fas fa-puzzle-piece',
 		'fas fa-shield-alt',
 		'fas fa-star',
 		'fas fa-tree',
@@ -128,10 +131,10 @@ icon = (function() {
 	function convertToMap (icon) {
 		var text = window.getComputedStyle(icon, ":before"),
 			tCtx = document.createElement("canvas").getContext('2d'),
-			height, width, pixelData, x, y,
+			height, width, pixelData, x, y, luma,
 			map = {hint: {x: [[0]], y: [[0]]}, mask: []};
 
-		height = width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")); // px equivalent of 1em or whatever icon height is
+		height = width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")); // px equivalent of 1em or whatever icon height is 
 
 		//Prepare canvas
 		tCtx.canvas.width = width;
@@ -145,18 +148,18 @@ icon = (function() {
 		tCtx.textBaseline = "middle";
 		tCtx.fillStyle = 'black';
 		tCtx.fillText(JSON.parse(text.content), width / 2, height / 2);
-
+		
 		//console.log(tCtx.canvas.toDataURL());
 
 		pixelData = tCtx.getImageData(0, 0, width, height).data
 
-		map.mask = new Array(height);
+		map.mask = new Array(height); 
 		map.hint.y = new Array(height);
 		map.hint.x = new Array(width);
 
 		// Invert colours of pixel as "on" if any individual byte is
 		// more than half way. We're effectively reducing the bit-depth
-		// to 1.
+		// to 1. 
 		for (i = 0; i < pixelData.length; i += 4) {
 			y = Math.floor((i / 4) / width);
 			x = (i / 4) % width;
@@ -165,12 +168,11 @@ icon = (function() {
 			   map.mask[y] = (new Array(width)).fill(false);
 			}
 
-			map.mask[y][x] = (
-				   ((255 - pixelData[i + 0]) >= 128)
-				|| ((255 - pixelData[i + 1]) >= 128)
-				|| ((255 - pixelData[i + 2]) >= 128)
-				|| ((255 - pixelData[i + 3]) >= 128)
-			);
+			luma = (pixelData[i + 0] * 0.2126) 
+				+ (pixelData[i + 1] * 0.7152)
+				+ (pixelData[i + 2] * 0.0722);
+
+			map.mask[y][x] = luma < 127;
 
 			//Count consequitive cells
 			// First ensure there are appropriate arrys to increment, creating them if necessary
@@ -202,12 +204,12 @@ icon = (function() {
 		[map.hint.x, map.hint.y].forEach(function (hint) {
 			hint.forEach(function (item) {
 				if (item.length > 1 && !item[item.length - 1]) {
-					item.pop();
+					item.pop(); 
 				}
 			});
 		});
 
-		return map;
+		return map;      
 	}
 
 	function buildTable (answerMap) {
@@ -232,7 +234,7 @@ icon = (function() {
 
 			row.forEach(function(col, x) {
 				var td = document.createElement("td");
-
+					
 				if (answerMap.mask[y][x]) {
 					td.className = "answer";
 				}
@@ -254,7 +256,7 @@ icon = (function() {
 
 		setRandom(icon);
 		tableParent.innerHTML = "";
-		tableParent.appendChild(buildTable(convertToMap(icon)));
+		tableParent.appendChild(buildTable(convertToMap(icon)));     
 	}
 }());
 // ]]>
