@@ -5,6 +5,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" />
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous" />
 		<style type="text/css">
+/* <![CDATA[ */
 html, body{
 	text-align: center;
 	font-size: 16px;
@@ -52,7 +53,7 @@ p {
 }
 
 #outputGrid tr th:first-child {
-	width: 3em; 
+	width: 3em;
 }
 
 #outputGrid td:hover {
@@ -86,9 +87,10 @@ p {
 #outputGrid.show td.answer.selected {
 	background-color: black;
 }
+/* ]]> */
 		</style>
 		<script type="text/javascript">
-// <![CDATA[
+/* <![CDATA[ */
 icon = (function() {
 	var icons = [
 		'fas fa-anchor',
@@ -134,7 +136,7 @@ icon = (function() {
 			height, width, pixelData, x, y, luma,
 			map = {hint: {x: [[0]], y: [[0]]}, mask: []};
 
-		height = width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")); // px equivalent of 1em or whatever icon height is 
+		height = width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")); // px equivalent of 1em or whatever icon height is
 
 		//Prepare canvas
 		tCtx.canvas.width = width;
@@ -148,18 +150,18 @@ icon = (function() {
 		tCtx.textBaseline = "middle";
 		tCtx.fillStyle = 'black';
 		tCtx.fillText(JSON.parse(text.content), width / 2, height / 2);
-		
+
 		//console.log(tCtx.canvas.toDataURL());
 
 		pixelData = tCtx.getImageData(0, 0, width, height).data
 
-		map.mask = new Array(height); 
+		map.mask = new Array(height);
 		map.hint.y = new Array(height);
 		map.hint.x = new Array(width);
 
-		// Invert colours of pixel as "on" if any individual byte is
-		// more than half way. We're effectively reducing the bit-depth
-		// to 1. 
+		// Convert pixel colours to grayscale and if the luma byte has
+		// left than half value (i.e. towards black) then set that as the
+		// accepted answer. We're effectively reducing the bit-depth to 1.
 		for (i = 0; i < pixelData.length; i += 4) {
 			y = Math.floor((i / 4) / width);
 			x = (i / 4) % width;
@@ -168,14 +170,14 @@ icon = (function() {
 			   map.mask[y] = (new Array(width)).fill(false);
 			}
 
-			luma = (pixelData[i + 0] * 0.2126) 
+			luma = (pixelData[i + 0] * 0.2126)
 				+ (pixelData[i + 1] * 0.7152)
 				+ (pixelData[i + 2] * 0.0722);
 
 			map.mask[y][x] = luma < 127;
 
-			//Count consequitive cells
-			// First ensure there are appropriate arrys to increment, creating them if necessary
+			//Count consecutive cells
+			// First ensure there are appropriate arrays to increment, creating them if necessary
 			if (!map.hint.x[x]) {
 				map.hint.x[x] = [0]
 			}
@@ -204,12 +206,12 @@ icon = (function() {
 		[map.hint.x, map.hint.y].forEach(function (hint) {
 			hint.forEach(function (item) {
 				if (item.length > 1 && !item[item.length - 1]) {
-					item.pop(); 
+					item.pop();
 				}
 			});
 		});
 
-		return map;      
+		return map;
 	}
 
 	function buildTable (answerMap) {
@@ -234,7 +236,7 @@ icon = (function() {
 
 			row.forEach(function(col, x) {
 				var td = document.createElement("td");
-					
+
 				if (answerMap.mask[y][x]) {
 					td.className = "answer";
 				}
@@ -256,10 +258,10 @@ icon = (function() {
 
 		setRandom(icon);
 		tableParent.innerHTML = "";
-		tableParent.appendChild(buildTable(convertToMap(icon)));     
+		tableParent.appendChild(buildTable(convertToMap(icon)));
 	}
 }());
-// ]]>
+/* ]]> */
 		</script>
 	</head>
 	<body onload="icon('icon', 'outputGrid')">
