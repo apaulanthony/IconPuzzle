@@ -1,60 +1,60 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Icon Puzzle</title>
+	<head>
+		<title>Icon Puzzle</title>
 		<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" />
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous" />
-        <style type="text/css">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous" />
+		<style type="text/css">
 html, body{
-    text-align: center;
-    font-size: 16px;
+	text-align: center;
+	font-size: 16px;
 	font-family: 'Ubuntu', sans-serif;
 }
 
 #icon {
-    display: none;
+	display: none;
 	font-size: 12px;
 }
 
 #icon.show {
-    display: inline-block;
-    font-size: 1em !important;
+	display: inline-block;
+	font-size: 1em !important;
 }
 
 #outputGrid {
-    margin: auto auto;
-    overflow: hidden;
+	margin: auto auto;
+	overflow: hidden;
 }
 
 #outputGrid tr:hover {
-    background-color: #ffa;
+	background-color: #ffa;
 }
 
-#outputGrid th, 
+#outputGrid th,
 #outputGrid td {
-    position: relative;
-    border: 1px;
+	position: relative;
+	border: 1px;
 }
 
 #outputGrid th {
-    background: silver;
+	background: silver;
 }
 
 #outputGrid td {
-    height: 2em;
-    width: 2em;
+	height: 2em;
+	width: 2em;
 }
 
 #outputGrid table:firchChild th {
-    height: 5em;
+	height: 5em;
 }
 
 #outputGrid tr:firchChild {
-    width: 5em; 
+	width: 5em;
 }
 
 #outputGrid td:hover {
-    background-color: orange;
+	background-color: orange;
 }
 
 #outputGrid td:hover::after,
@@ -70,208 +70,208 @@ html, body{
 }
 
 #outputGrid td.selected {
-    background-color: green;
+	background-color: green;
 }
 
 #outputGrid.show td.selected {
-    background-color: red;
+	background-color: red;
 }
 
 #outputGrid.show td.answer {
-    background-color: red;
+	background-color: red;
 }
 
 #outputGrid.show td.answer.selected {
-    background-color: black;
+	background-color: black;
 }
-        </style>
-        <script type="text/javascript">
+		</style>
+		<script type="text/javascript">
 // <![CDATA[
 icon = (function() {
-    var icons = [
-        'fas fa-anchor',
-        'fab fa-android',
-        'fab fa-apple',
-        'fas fa-bath',
-        'fas fa-bed',
-        'fas fa-beer',
-        'fas fa-birthday-cake',
-        'fas fa-bolt',
-        'fas fa-bug',
-        'fas fa-camera-retro',
-        'fas fa-chess-board',
-        'fas fa-chess-rook',
-        'fas fa-chess-queen',
-        'fas fa-cog',
-        'fas fa-cogs',
-        'fas fa-cubes',
-        'fab fa-fort-awesome',
-        'fas fa-gamepad',
-        'fas fa-music',
-        'fas fa-paper-plane',
-        'fas fa-paperclip',
-        'fas fa-paw',
-        'fas fa-shield-alt',
-        'fas fa-star',
-        'fas fa-tree',
-        'fas fa-trophy'
-    ];
+	var icons = [
+		'fas fa-anchor',
+		'fab fa-android',
+		'fab fa-apple',
+		'fas fa-bath',
+		'fas fa-bed',
+		'fas fa-beer',
+		'fas fa-birthday-cake',
+		'fas fa-bolt',
+		'fas fa-bug',
+		'fas fa-camera-retro',
+		'fas fa-chess-board',
+		'fas fa-chess-rook',
+		'fas fa-chess-queen',
+		'fas fa-cog',
+		'fas fa-cogs',
+		'fas fa-cubes',
+		'fab fa-fort-awesome',
+		'fas fa-gamepad',
+		'fas fa-music',
+		'fas fa-paper-plane',
+		'fas fa-paperclip',
+		'fas fa-paw',
+		'fas fa-shield-alt',
+		'fas fa-star',
+		'fas fa-tree',
+		'fas fa-trophy'
+	];
 
-    function setRandom (icon) {
-        icon.className = icons[Math.floor(Math.random() * icons.length)];
-    }
+	function setRandom (icon) {
+		icon.className = icons[Math.floor(Math.random() * icons.length)];
+	}
 
-    function selected () {
-        this.classList.toggle("selected");
-    }
+	function selected () {
+		this.classList.toggle("selected");
+	}
 
-    function convertToMap (icon) {
-        var text = window.getComputedStyle(icon, ":before"),
-            tCtx = document.createElement("canvas").getContext('2d'),
-            height, width, pixelData, x, y,
-            map = {hint: {x: [[0]], y: [[0]]}, mask: []};
+	function convertToMap (icon) {
+		var text = window.getComputedStyle(icon, ":before"),
+			tCtx = document.createElement("canvas").getContext('2d'),
+			height, width, pixelData, x, y,
+			map = {hint: {x: [[0]], y: [[0]]}, mask: []};
 
-        height = width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")); // px equivalent of 1em or whatever icon height is 
+		height = width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")); // px equivalent of 1em or whatever icon height is
 
-        //Prepare canvas
-        tCtx.canvas.width = width;
-        tCtx.canvas.height = height;
-        tCtx.fillStyle = 'white';
-        tCtx.fillRect(0, 0, width, height);
+		//Prepare canvas
+		tCtx.canvas.width = width;
+		tCtx.canvas.height = height;
+		tCtx.fillStyle = 'white';
+		tCtx.fillRect(0, 0, width, height);
 
-        //Draw text icon on to canvas
-        tCtx.font = text.font;
-        tCtx.textAlign = 'center'
-        tCtx.textBaseline = "middle";
-        tCtx.fillStyle = 'black';
-        tCtx.fillText(JSON.parse(text.content), width / 2, height / 2);
-        
-        //console.log(tCtx.canvas.toDataURL());
+		//Draw text icon on to canvas
+		tCtx.font = text.font;
+		tCtx.textAlign = 'center'
+		tCtx.textBaseline = "middle";
+		tCtx.fillStyle = 'black';
+		tCtx.fillText(JSON.parse(text.content), width / 2, height / 2);
 
-        pixelData = tCtx.getImageData(0, 0, width, height).data
+		//console.log(tCtx.canvas.toDataURL());
 
-        map.mask = new Array(height); 
-        map.hint.y = new Array(height);
-        map.hint.x = new Array(width);
+		pixelData = tCtx.getImageData(0, 0, width, height).data
 
-        // Invert colours of pixel as "on" if any individual byte is
-        // more than half way. We're effectively reducing the bit-depth
-        // to 1. 
-        for (i = 0; i < pixelData.length; i += 4) {
-            y = Math.floor((i / 4) / width);
-            x = (i / 4) % width;
+		map.mask = new Array(height);
+		map.hint.y = new Array(height);
+		map.hint.x = new Array(width);
 
-            if (!map.mask[y]) {
-               map.mask[y] = (new Array(width)).fill(false);
-            }
+		// Invert colours of pixel as "on" if any individual byte is
+		// more than half way. We're effectively reducing the bit-depth
+		// to 1.
+		for (i = 0; i < pixelData.length; i += 4) {
+			y = Math.floor((i / 4) / width);
+			x = (i / 4) % width;
 
-            map.mask[y][x] = (
-                   ((255 - pixelData[i + 0]) >= 128)
-                || ((255 - pixelData[i + 1]) >= 128)
-                || ((255 - pixelData[i + 2]) >= 128)
-                || ((255 - pixelData[i + 3]) >= 128)
-            );
+			if (!map.mask[y]) {
+			   map.mask[y] = (new Array(width)).fill(false);
+			}
 
-            //Count consequitive cells
-            // First ensure there are appropriate arrys to increment, creating them if necessary
-            if (!map.hint.x[x]) {
-                map.hint.x[x] = [0]
-            }
+			map.mask[y][x] = (
+				   ((255 - pixelData[i + 0]) >= 128)
+				|| ((255 - pixelData[i + 1]) >= 128)
+				|| ((255 - pixelData[i + 2]) >= 128)
+				|| ((255 - pixelData[i + 3]) >= 128)
+			);
 
-            if (!map.hint.y[y]) {
-                map.hint.y[y] = [0];
-            }
+			//Count consequitive cells
+			// First ensure there are appropriate arrys to increment, creating them if necessary
+			if (!map.hint.x[x]) {
+				map.hint.x[x] = [0]
+			}
 
-            if (map.mask[y][x]) {
-                // For true values, simply bumpt up previous value
-                map.hint.x[x][map.hint.x[x].length - 1] += 1;
-                map.hint.y[y][map.hint.y[y].length - 1] += 1;
-            } else {
-                // For false values, add start a new count unless it's already at 0
-                if (map.hint.x[x][map.hint.x[x].length - 1]) {
-                    map.hint.x[x].push(0);
-                }
+			if (!map.hint.y[y]) {
+				map.hint.y[y] = [0];
+			}
 
-                if (map.hint.y[y][map.hint.y[y].length - 1]) {
-                    map.hint.y[y].push(0);
-                }
-            }
-        }
+			if (map.mask[y][x]) {
+				// For true values, simply bumpt up previous value
+				map.hint.x[x][map.hint.x[x].length - 1] += 1;
+				map.hint.y[y][map.hint.y[y].length - 1] += 1;
+			} else {
+				// For false values, add start a new count unless it's already at 0
+				if (map.hint.x[x][map.hint.x[x].length - 1]) {
+					map.hint.x[x].push(0);
+				}
 
-        //Remove trailing 0 from counts
-        [map.hint.x, map.hint.y].forEach(function (hint) {
-            hint.forEach(function (item) {
-                if (item.length > 1 && !item[item.length - 1]) {
-                    item.pop(); 
-                }
-            });
-        });
+				if (map.hint.y[y][map.hint.y[y].length - 1]) {
+					map.hint.y[y].push(0);
+				}
+			}
+		}
 
-        return map;      
-    }
+		//Remove trailing 0 from counts
+		[map.hint.x, map.hint.y].forEach(function (hint) {
+			hint.forEach(function (item) {
+				if (item.length > 1 && !item[item.length - 1]) {
+					item.pop();
+				}
+			});
+		});
 
-    function buildTable (answerMap) {
-        var table = document.createElement("table"),
-            tr = table.appendChild(document.createElement('tr')),
-            th = document.createElement('th');
+		return map;
+	}
 
-        th.innerText = answerMap.hint.x.length + '/' + answerMap.hint.y.length;
-        tr.appendChild(th);
+	function buildTable (answerMap) {
+		var table = document.createElement("table"),
+			tr = table.appendChild(document.createElement('tr')),
+			th = document.createElement('th');
 
-        answerMap.hint.x.forEach(function (header) {
-            th = document.createElement("th");
-            th.innerText = header.join(", ");
-            tr.appendChild(th);
-        });
+		th.innerText = answerMap.hint.x.length + '/' + answerMap.hint.y.length;
+		tr.appendChild(th);
 
-        answerMap.mask.forEach(function (row, y) {
-            tr = table.appendChild(document.createElement('tr'));
-            th = document.createElement('th');
-            th.innerText = answerMap.hint.y[y].join(", ");
-            tr.appendChild(th);
+		answerMap.hint.x.forEach(function (header) {
+			th = document.createElement("th");
+			th.innerText = header.join(", ");
+			tr.appendChild(th);
+		});
 
-            row.forEach(function(col, x) {
-                var td = document.createElement("td");
-                    
-                if (answerMap.mask[y][x]) {
-                    td.className = "answer";
-                }
-                td.addEventListener("click", selected);
+		answerMap.mask.forEach(function (row, y) {
+			tr = table.appendChild(document.createElement('tr'));
+			th = document.createElement('th');
+			th.innerText = answerMap.hint.y[y].join(", ");
+			tr.appendChild(th);
 
-                tr.appendChild(td);
-            });
-        });
+			row.forEach(function(col, x) {
+				var td = document.createElement("td");
 
-        return table;
-    }
+				if (answerMap.mask[y][x]) {
+					td.className = "answer";
+				}
+				td.addEventListener("click", selected);
 
-    return function (element, parentName) {
-        var icon = (typeof element === 'string' && document.getElementById(element)) || element,
-            tableParent = typeof parentName === 'string' && document.getElementById(parentName);
+				tr.appendChild(td);
+			});
+		});
 
-        icon.classList.remove("show");
-        tableParent.classList.remove("show");
+		return table;
+	}
 
-        setRandom(icon);
-        tableParent.innerHTML = "";
-        tableParent.appendChild(buildTable(convertToMap(icon)));     
-    }
+	return function (element, parentName) {
+		var icon = (typeof element === 'string' && document.getElementById(element)) || element,
+			tableParent = typeof parentName === 'string' && document.getElementById(parentName);
+
+		icon.classList.remove("show");
+		tableParent.classList.remove("show");
+
+		setRandom(icon);
+		tableParent.innerHTML = "";
+		tableParent.appendChild(buildTable(convertToMap(icon)));
+	}
 }());
 // ]]>
-        </script>
-    </head>
-    <body onload="icon('icon', 'outputGrid')">
-        <h1>Icon Puzzle</h1>
-        <p>
-            Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column. Click on a cell to colour it in. If you want a hint as to what you're aiming for click on "Show".
-        </p>
+		</script>
+	</head>
+	<body onload="icon('icon', 'outputGrid')">
+		<h1>Icon Puzzle</h1>
+		<p>
+			Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column. Click on a cell to colour it in. If you want a hint as to what you're aiming for click on "Show".
+		</p>
 
-        <div id="outputGrid"></div>
+		<div id="outputGrid"></div>
 
-        <div>
-            <input type="number" value="12" min="8" onchange="document.getElementById('icon').style.fontSize = this.value + 'px';" />
-            <button onclick="icon('icon', 'outputGrid'); return false">New</button>
-            <button onclick="document.getElementById('icon').classList.toggle('show'); document.getElementById('outputGrid').classList.toggle('show'); return false">Show <span id="icon"></span></button>
-        </div>
-    </body>
+		<div>
+			<input type="number" value="12" min="8" onchange="document.getElementById('icon').style.fontSize = this.value + 'px';" />
+			<button onclick="icon('icon', 'outputGrid'); return false">New</button>
+			<button onclick="document.getElementById('icon').classList.toggle('show'); document.getElementById('outputGrid').classList.toggle('show'); return false">Show <span id="icon"></span></button>
+		</div>
+	</body>
 </html>
