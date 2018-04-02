@@ -12,8 +12,20 @@ html, body{
 	font-family: 'Ubuntu', sans-serif;
 }
 
+body > * {
+	margin: 1em auto;
+}
+
 p {
 	text-align: left;
+}
+
+input[type=number] {
+	text-align: right;
+}
+
+input, button {
+	width: 6em;
 }
 
 #icon {
@@ -29,6 +41,13 @@ p {
 #outputGrid table {
 	margin: auto auto;
 	overflow: hidden;
+
+	-webkit-box-shadow: 0.5em 0.5em 0.25em 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0.5em 0.5em 0.25em 0px rgba(0,0,0,0.75);
+	box-shadow: 0.5em 0.5em 0.25em 0px rgba(0,0,0,0.75);
+
+	border: solid thin black;
+	border-collapse: collapse;
 }
 
 #outputGrid tr:hover {
@@ -41,7 +60,7 @@ p {
 	border: 1px;
 	height: 2em;
 	width: 2em;
-	transition: all 0.5s ease;
+	transition: all 0.25s ease;
 }
 
 #outputGrid th {
@@ -76,10 +95,7 @@ p {
 	background-color: green;
 }
 
-#outputGrid.show td.selected {
-	background-color: red;
-}
-
+#outputGrid.show td.selected,
 #outputGrid.show td.answer {
 	background-color: red;
 }
@@ -120,9 +136,9 @@ icon = (function() {
 		'fas fa-star',
 		'fas fa-tree',
 		'fas fa-trophy'
-	];
+	], icon, tableParent;
 
-	function setRandom (icon) {
+	function setRandom () {
 		icon.className = icons[Math.floor(Math.random() * icons.length)];
 	}
 
@@ -130,7 +146,7 @@ icon = (function() {
 		this.classList.toggle("selected");
 	}
 
-	function convertToMap (icon) {
+	function convertToMap () {
 		var text = window.getComputedStyle(icon, ":before"),
 			tCtx = document.createElement("canvas").getContext('2d'),
 			height, width, pixelData, x, y, luma,
@@ -249,22 +265,35 @@ icon = (function() {
 		return table;
 	}
 
-	return function (element, parentName) {
-		var icon = (typeof element === 'string' && document.getElementById(element)) || element,
-			tableParent = typeof parentName === 'string' && document.getElementById(parentName);
+	return {
+		new: function (element, parentName) {
+			icon = (typeof element === 'string' && document.getElementById(element)) || element;
+			tableParent = typeof parentName === 'string' && document.getElementById(parentName) || parentName;
 
-		icon.classList.remove("show");
-		tableParent.classList.remove("show");
+			icon.classList.remove("show");
+			tableParent.classList.remove("show");
 
-		setRandom(icon);
-		tableParent.innerHTML = "";
-		tableParent.appendChild(buildTable(convertToMap(icon)));
+			setRandom();
+
+			tableParent.innerHTML = "";
+			tableParent.appendChild(buildTable(convertToMap()));
+		},
+		setSize: function (value) {
+			icon.style.fontSize = value;
+		},
+		show: function () {
+			if (icon.classList.contains('show') || confirm('Are you sure?')) {
+				[icon, tableParent].forEach(function(element){
+					element.classList.toggle('show')
+				});
+			}
+		}
 	}
 }());
 /* ]]> */
 		</script>
 	</head>
-	<body onload="icon('icon', 'outputGrid')">
+	<body onload="icon.new('icon', 'outputGrid')">
 		<h1>Icon Puzzle</h1>
 		<p>
 			Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column. Click on a cell to colour it in. If you want a hint as to what you're aiming for click on "Show".
@@ -273,9 +302,9 @@ icon = (function() {
 		<div id="outputGrid"></div>
 
 		<div>
-			<input type="number" value="12" min="8" onchange="document.getElementById('icon').style.fontSize = this.value + 'px';" />
-			<button onclick="icon('icon', 'outputGrid'); return false">New</button>
-			<button onclick="document.getElementById('icon').classList.toggle('show'); document.getElementById('outputGrid').classList.toggle('show'); return false">Show <span id="icon"></span></button>
+			<input type="number" value="12" min="8" onchange="icon.setSize(this.value + 'px');" />
+			<button onclick="icon.new('icon', 'outputGrid'); return false">New</button>
+			<button onclick="icon.show(); return false">Show <span id="icon"></span></button>
 		</div>
 	</body>
 </html>
