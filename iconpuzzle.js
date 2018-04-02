@@ -1,33 +1,35 @@
+/*globals iconpuzzle:true */
+/* exported iconpuzzle */ 
 iconpuzzle = (function() {
 	var icons = [
-		'fas fa-anchor',
-		'fab fa-android',
-		'fab fa-apple',
-		'fas fa-bath',
-		'fas fa-bed',
-		'fas fa-beer',
-		'fas fa-birthday-cake',
-		'fas fa-bolt',
-		'fas fa-bug',
-		'fas fa-camera-retro',
-		'fas fa-chess-board',
-		'fas fa-chess-rook',
-		'fas fa-chess-queen',
-		'fas fa-cog',
-		'fas fa-cogs',
-		'fas fa-cubes',
-		'fab fa-fort-awesome',
-		'fas fa-gamepad',
-		'fas fa-music',
-		'fas fa-paper-plane',
-		'fas fa-paperclip',
-		'fas fa-paw',
-		'fas fa-puzzle-piece',
-		'fas fa-shield-alt',
-		'fas fa-star',
-		'fas fa-tree',
-		'fas fa-trophy'
-	], icon, tableParent;
+			"fas fa-anchor",
+			"fab fa-android",
+			"fab fa-apple",
+			"fas fa-bath",
+			"fas fa-bed",
+			"fas fa-beer",
+			"fas fa-birthday-cake",
+			"fas fa-bolt",
+			"fas fa-bug",
+			"fas fa-camera-retro",
+			"fas fa-chess-board",
+			"fas fa-chess-rook",
+			"fas fa-chess-queen",
+			"fas fa-cog",
+			"fas fa-cogs",
+			"fas fa-cubes",
+			"fab fa-fort-awesome",
+			"fas fa-gamepad",
+			"fas fa-music",
+			"fas fa-paper-plane",
+			"fas fa-paperclip",
+			"fas fa-paw",
+			"fas fa-puzzle-piece",
+			"fas fa-shield-alt",
+			"fas fa-star",
+			"fas fa-tree",
+			"fas fa-trophy"
+		], icon, tableParent;
 
 	function setRandom () {
 		icon.className = icons[Math.floor(Math.random() * icons.length)];
@@ -39,7 +41,7 @@ iconpuzzle = (function() {
 
 	function convertToMap () {
 		var text = window.getComputedStyle(icon, ":before"),
-			tCtx = document.createElement("canvas").getContext('2d'),
+			tCtx = document.createElement("canvas").getContext("2d"),
 			height, width, pixelData, i, x, y, luma,
 			map = {hint: {x: [[0]], y: [[0]]}, mask: []};
 
@@ -48,14 +50,14 @@ iconpuzzle = (function() {
 		//Prepare canvas
 		tCtx.canvas.width = width;
 		tCtx.canvas.height = height;
-		tCtx.fillStyle = 'white';
+		tCtx.fillStyle = "white";
 		tCtx.fillRect(0, 0, width, height);
 
 		//Draw text icon on to canvas
 		tCtx.font = text.font;
-		tCtx.textAlign = 'center'
+		tCtx.textAlign = "center";
 		tCtx.textBaseline = "middle";
-		tCtx.fillStyle = 'black';
+		tCtx.fillStyle = "black";
 		tCtx.fillText(JSON.parse(text.content), width / 2, height / 2);
 
 		//console.log(tCtx.canvas.toDataURL());
@@ -67,13 +69,13 @@ iconpuzzle = (function() {
 		// Convert pixel colours to grayscale and if the luma byte has
 		// left than half value (i.e. towards black) then set that as the
 		// accepted answer. We're effectively reducing the bit-depth to 1.
-		pixelData = tCtx.getImageData(0, 0, width, height).data
+		pixelData = tCtx.getImageData(0, 0, width, height).data;
 		for (i = 0; i < pixelData.length; i += 4) {
 			y = Math.floor((i / 4) / width);
 			x = (i / 4) % width;
 
 			if (!map.mask[y]) {
-			   map.mask[y] = (new Array(width)).fill(false);
+				map.mask[y] = (new Array(width)).fill(false);
 			}
 
 			luma = (pixelData[i + 0] * 0.2126)
@@ -85,7 +87,7 @@ iconpuzzle = (function() {
 			//Count consecutive cells
 			// First ensure there are appropriate arrays to increment, creating them if necessary
 			if (!map.hint.x[x]) {
-				map.hint.x[x] = [0]
+				map.hint.x[x] = [0];
 			}
 
 			if (!map.hint.y[y]) {
@@ -124,10 +126,10 @@ iconpuzzle = (function() {
 		var table = document.createElement("table"),
 			tr, th;
 
-		tr = table.appendChild(document.createElement('tr'))
+		tr = table.appendChild(document.createElement("tr"));
 
-		th = tr.appendChild(document.createElement('th'));
-		th.innerText = answerMap.hint.x.length + '/' + answerMap.hint.y.length;
+		th = tr.appendChild(document.createElement("th"));
+		th.innerText = answerMap.hint.x.length + "/" + answerMap.hint.y.length;
 
 		answerMap.hint.x.forEach(function (header) {
 			th = tr.appendChild(document.createElement("th"));
@@ -135,9 +137,9 @@ iconpuzzle = (function() {
 		});
 
 		answerMap.mask.forEach(function (row, y) {
-			tr = table.appendChild(document.createElement('tr'));
+			tr = table.appendChild(document.createElement("tr"));
 
-			th = tr.appendChild(document.createElement('th'));
+			th = tr.appendChild(document.createElement("th"));
 			th.innerText = answerMap.hint.y[y].join(", ");
 
 			row.forEach(function(col, x) {
@@ -156,8 +158,8 @@ iconpuzzle = (function() {
 
 	return {
 		new: function (element, parentName) {
-			icon = (typeof element === 'string' && document.getElementById(element)) || element;
-			tableParent = typeof parentName === 'string' && document.getElementById(parentName) || parentName;
+			icon = (typeof element === "string" && document.getElementById(element)) || element;
+			tableParent = typeof parentName === "string" && document.getElementById(parentName) || parentName;
 
 			icon.classList.remove("show");
 			tableParent.classList.remove("show");
@@ -171,11 +173,11 @@ iconpuzzle = (function() {
 			icon.style.fontSize = value;
 		},
 		show: function () {
-			if (icon.classList.contains('show') || confirm('Are you sure?')) {
+			if (icon.classList.contains("show") || confirm("Are you sure?")) {
 				[icon, tableParent].forEach(function(element){
-					element.classList.toggle('show')
+					element.classList.toggle("show");
 				});
 			}
 		}
-	}
+	};
 }());
