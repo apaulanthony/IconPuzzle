@@ -27,7 +27,7 @@ input, button {
 	.show {
 		display: inline-block;
 		font-size: 1em !important;
-	}		
+	}
 }
 
 #outputGrid {
@@ -60,31 +60,8 @@ input, button {
 		height: 2em;
 		width: 2em;
 		transition: all 0.25s ease;
-	}
 
-	th {
-		font-size: 0.8em;
-		background: silver;
-
-		&:first-child {
-			width: 3em;
-		}
-	}
-
-	td {		
-		&:hover {
-			background-color: #ff5;
-			cursor: pointer;
-		}
-
-		.selected {
-			background-color: green;
-		}
-	}
-
-	td:hover,
-	th:hover {
-		&::after {
+		&:hover::after {
 			content: "";
 			background-color: #ffa;
 			position: absolute;
@@ -94,16 +71,35 @@ input, button {
 			width: 100%;
 			z-index: -1;
 			transition: all 0.25s ease;
-		}	
+		}
 	}
 
-	.show {
-		td.selected,
-		td.answer {
+	th {
+		background-color: silver;
+
+		&:first-child {
+			width: 3em;
+		}
+	}
+
+	td {
+		&:hover {
+			background-color: #ff5;
+			cursor: pointer;
+		}
+
+		&.selected {
+			background-color: green;
+		}
+	}
+
+	&.show td {
+		&.selected,
+		&.answer {
 			background-color: red;
 		}
-	
-		td.answer.selected {
+
+		&.answer.selected {
 			background-color: black;
 		}
 	}
