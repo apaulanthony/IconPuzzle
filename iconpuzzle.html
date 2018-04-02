@@ -41,17 +41,15 @@ input, button {
 #outputGrid table {
 	margin: auto auto;
 	overflow: hidden;
-
 	-webkit-box-shadow: 0.5em 0.5em 0.25em 0px rgba(0,0,0,0.75);
 	-moz-box-shadow: 0.5em 0.5em 0.25em 0px rgba(0,0,0,0.75);
 	box-shadow: 0.5em 0.5em 0.25em 0px rgba(0,0,0,0.75);
-
 	border: solid thin black;
 	border-collapse: collapse;
 }
 
-#outputGrid tr:hover {
-	background-color: #ffa;
+#outputGrid tr {
+	transition: all 0.25s ease;
 }
 
 #outputGrid th,
@@ -64,6 +62,7 @@ input, button {
 }
 
 #outputGrid th {
+	font-size: 0.8em;
 	background: silver;
 }
 
@@ -75,21 +74,28 @@ input, button {
 	width: 3em;
 }
 
-#outputGrid td:hover {
-	background-color: orange;
+
+#outputGrid tr:hover {
+	background-color: #ffa;
 }
 
 #outputGrid td:hover::after,
 #outputGrid th:hover::after {
-  content: "";
-  position: absolute;
-  background-color: #ffa;
-  left: 0;
-  top: -5000px;
-  height: 10000px;
-  width: 100%;
-  z-index: -1;
+	content: "";
+	background-color: #ffa;
+	position: absolute;
+	left: 0;
+	top: -5000px;
+	height: 10000px;
+	width: 100%;
+	z-index: -1;
+	transition: all 0.25s ease;
 }
+
+#outputGrid td:hover {
+	background-color: #ff5;
+}
+
 
 #outputGrid td.selected {
 	background-color: green;
@@ -149,7 +155,7 @@ icon = (function() {
 	function convertToMap () {
 		var text = window.getComputedStyle(icon, ":before"),
 			tCtx = document.createElement("canvas").getContext('2d'),
-			height, width, pixelData, x, y, luma,
+			height, width, pixelData, i, x, y, luma,
 			map = {hint: {x: [[0]], y: [[0]]}, mask: []};
 
 		height = width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")); // px equivalent of 1em or whatever icon height is
@@ -169,8 +175,6 @@ icon = (function() {
 
 		//console.log(tCtx.canvas.toDataURL());
 
-		pixelData = tCtx.getImageData(0, 0, width, height).data
-
 		map.mask = new Array(height);
 		map.hint.y = new Array(height);
 		map.hint.x = new Array(width);
@@ -178,6 +182,7 @@ icon = (function() {
 		// Convert pixel colours to grayscale and if the luma byte has
 		// left than half value (i.e. towards black) then set that as the
 		// accepted answer. We're effectively reducing the bit-depth to 1.
+		pixelData = tCtx.getImageData(0, 0, width, height).data
 		for (i = 0; i < pixelData.length; i += 4) {
 			y = Math.floor((i / 4) / width);
 			x = (i / 4) % width;
@@ -232,33 +237,32 @@ icon = (function() {
 
 	function buildTable (answerMap) {
 		var table = document.createElement("table"),
-			tr = table.appendChild(document.createElement('tr')),
-			th = document.createElement('th');
+			tr, th;
 
+		tr = table.appendChild(document.createElement('tr'))
+
+		th = tr.appendChild(document.createElement('th'));
 		th.innerText = answerMap.hint.x.length + '/' + answerMap.hint.y.length;
-		tr.appendChild(th);
 
 		answerMap.hint.x.forEach(function (header) {
-			th = document.createElement("th");
+			th = tr.appendChild(document.createElement("th"));
 			th.innerText = header.join(", ");
-			tr.appendChild(th);
 		});
 
 		answerMap.mask.forEach(function (row, y) {
 			tr = table.appendChild(document.createElement('tr'));
-			th = document.createElement('th');
+
+			th = tr.appendChild(document.createElement('th'));
 			th.innerText = answerMap.hint.y[y].join(", ");
-			tr.appendChild(th);
 
 			row.forEach(function(col, x) {
-				var td = document.createElement("td");
+				var td = tr.appendChild(document.createElement("td"));
 
 				if (answerMap.mask[y][x]) {
 					td.className = "answer";
 				}
-				td.addEventListener("click", selected);
 
-				tr.appendChild(td);
+				td.addEventListener("click", selected);
 			});
 		});
 
