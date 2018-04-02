@@ -1,0 +1,112 @@
+html, body{
+	text-align: center;
+	font-size: 16px;
+	font-family: 'Ubuntu', sans-serif;
+}
+
+body > * {
+	margin: 1em auto;
+}
+
+p {
+	text-align: left;
+}
+
+input[type=number] {
+	text-align: right;
+}
+
+input, button {
+	width: 6em;
+}
+
+#icon {
+	display: none;
+	font-size: 12px;
+
+	.show {
+		display: inline-block;
+		font-size: 1em !important;
+	}		
+}
+
+
+#outputGrid {
+	table {
+		margin: auto auto;
+		overflow: hidden;
+		-webkit-box-shadow: 0.5em 0.5em 0.25em 0px rgba(0,0,0,0.75);
+		-moz-box-shadow: 0.5em 0.5em 0.25em 0px rgba(0,0,0,0.75);
+		box-shadow: 0.5em 0.5em 0.25em 0px rgba(0,0,0,0.75);
+		border: solid thin black;
+		border-collapse: collapse;
+	}
+
+	tr {
+		transition: all 0.25s ease;
+
+		&:first-child th {
+			height: 3em;
+		}
+
+		&:hover {
+			background-color: #ffa;
+		}
+	}
+
+	th,
+	td {
+		position: relative;
+		border: 1px;
+		height: 2em;
+		width: 2em;
+		transition: all 0.25s ease;
+	}
+
+	th {
+		font-size: 0.8em;
+		background: silver;
+
+		&:first-child {
+			width: 3em;
+		}
+	}
+
+
+	td {		
+		&:hover {
+			background-color: #ff5;
+			cursor: pointer;
+		}
+
+		.selected {
+			background-color: green;
+		}
+	}
+
+	td:hover,
+	th:hover {
+		&::after {
+			content: "";
+			background-color: #ffa;
+			position: absolute;
+			left: 0;
+			top: -5000px;
+			height: 10000px;
+			width: 100%;
+			z-index: -1;
+			transition: all 0.25s ease;
+		}	
+	}
+
+	.show {
+		td.selected,
+		td.answer {
+			background-color: red;
+		}
+	
+		td.answer.selected {
+			background-color: black;
+		}
+	}
+}

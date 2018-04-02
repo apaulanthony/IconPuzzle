@@ -1,0 +1,23 @@
+{
+  "name": "iconpuzzle",
+  "version": "1.0.0",
+  "description": "https://rawgit.com/apaulanthony/IconPuzzle/master/iconpuzzle.html",
+  "main": "iconPuzzle.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apaulanthony/IconPuzzle.git"
+  },
+  "author": "A Paul Anthony",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/apaulanthony/IconPuzzle/issues"
+  },
+  "homepage": "https://github.com/apaulanthony/IconPuzzle",
+  "dependencies": {},
+  "devDependencies": {
+    "sass": "^1.1.1"
+  }
+}
