@@ -1,11 +1,8 @@
 {
-  "name": "iconpuzzle",
+  "name": "IconPuzzle",
   "version": "1.0.0",
-  "description": "https://rawgit.com/apaulanthony/IconPuzzle/master/iconpuzzle.html",
-  "main": "iconPuzzle.html",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "description": "Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column.",
+  "main": "iconpuzzle.html",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/apaulanthony/IconPuzzle.git"

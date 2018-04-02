@@ -5,9 +5,9 @@
 		<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" />
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous" />
 		<link  rel="stylesheet" href="iconpuzzle.css" />
-		<script src="iconPuzzle.js" type="text/javascript"></script>
+		<script src="iconpuzzle.js" type="text/javascript"></script>
 	</head>
-	<body onload="icon.new('icon', 'outputGrid')">
+	<body onload="iconpuzzle.new('icon', 'outputGrid')">
 		<h1>Icon Puzzle</h1>
 		<p>
 			Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column. Click on a cell to colour it in. If you want a hint as to what you're aiming for click on "Show".
@@ -16,9 +16,9 @@
 		<div id="outputGrid"></div>
 
 		<div>
-			<input type="number" value="12" min="8" onchange="iconPuzzle.setSize(this.value + 'px');" />
-			<button onclick="iconPuzzle.new('icon', 'outputGrid'); return false">New</button>
-			<button onclick="iconPuzzle.show(); return false">Show <span id="icon"></span></button>
+			<input type="number" value="12" min="8" onchange="iconpuzzle.setSize(this.value + 'px');" />
+			<button onclick="iconpuzzle.new('icon', 'outputGrid'); return false">New</button>
+			<button onclick="iconpuzzle.show(); return false">Show <span id="icon"></span></button>
 		</div>
 	</body>
 </html>

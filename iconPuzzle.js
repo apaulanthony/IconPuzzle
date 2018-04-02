@@ -1,4 +1,4 @@
-iconPuzzle = (function() {
+iconpuzzle = (function() {
 	var icons = [
 		'fas fa-anchor',
 		'fab fa-android',
