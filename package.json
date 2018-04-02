@@ -15,6 +15,7 @@
   "homepage": "https://github.com/apaulanthony/IconPuzzle",
   "dependencies": {},
   "devDependencies": {
-    "sass": "^1.1.1"
+    "sass": "^1.1.1",
+    "uglify-js": "^3.3.18"
   }
 }
