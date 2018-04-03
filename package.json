@@ -1,5 +1,5 @@
 {
-  "name": "IconPuzzle",
+  "name": "iconpuzzle",
   "version": "1.0.0",
   "description": "Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column.",
   "main": "iconpuzzle.html",
