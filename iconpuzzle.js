@@ -2,37 +2,53 @@
 /* exported iconpuzzle */ 
 iconpuzzle = (function() {
 	var icons = [
-			"fas fa-anchor",
-			"fab fa-android",
-			"fab fa-apple",
-			"fas fa-bath",
-			"fas fa-bed",
-			"fas fa-beer",
-			"fas fa-birthday-cake",
-			"fas fa-bolt",
-			"fas fa-bug",
-			"fas fa-camera-retro",
-			"fas fa-chess-board",
-			"fas fa-chess-rook",
-			"fas fa-chess-queen",
-			"fas fa-cog",
-			"fas fa-cogs",
-			"fas fa-cubes",
-			"fab fa-fort-awesome",
-			"fas fa-gamepad",
-			"fas fa-music",
-			"fas fa-paper-plane",
-			"fas fa-paperclip",
-			"fas fa-paw",
-			"fas fa-puzzle-piece",
-			"fas fa-shield-alt",
-			"fas fa-star",
-			"fas fa-tree",
-			"fas fa-trophy"
+			"❤️",
+			"✨",
+			"✔️",			
+			"⏳",
+			"🔪",
+			"⚔️",
+			"🍒",
+			"📞"
+			/*
+			{ className: "fas fa-anchor"},
+			{ className: "fab fa-android"},
+			{ className: "fab fa-apple"},
+			{ className: "fas fa-bath"},
+			{ className: "fas fa-bed"},
+			{ className: "fas fa-beer"},
+			{ className: "fas fa-birthday-cake"},
+			{ className: "fas fa-bolt"},
+			{ className: "fas fa-bug"},
+			{ className: "fas fa-camera-retro"},
+			{ className: "fas fa-chess-board"},
+			{ className: "fas fa-chess-rook"},
+			{ className: "fas fa-chess-queen"},
+			{ className: "fas fa-cog"},
+			{ className: "fas fa-cogs"},
+			{ className: "fas fa-cubes"},
+			{ className: "fab fa-fort-awesome"},
+			{ className: "fas fa-gamepad"},
+			{ className: "fas fa-music"},
+			{ className: "fas fa-paper-plane"},
+			{ className: "fas fa-paperclip"},
+			{ className: "fas fa-paw"},
+			{ className: "fas fa-puzzle-piece"},
+			{ className: "fas fa-shield-alt"},
+			{ className: "fas fa-star"},
+			{ className: "fas fa-tree"},
+			{ className: "fas fa-trophy"}
+			*/
 		], icon, tableParent;
 
-	function setRandom () {
-		icon.className = icons[Math.floor(Math.random() * icons.length)];
+	function setRandom (icon) {
+		var image = icons[Math.floor(Math.random() * icons.length)];
+		
+		icon.innerText = typeof image === "string" ? image : "";
+
+		if (typeof image !== "string") {
+			Object.keys(image).forEach(function (k) { icon[k] = image[k]; });
+		}
 	}
 
 	function selected () {
@@ -58,7 +74,7 @@ iconpuzzle = (function() {
 		tCtx.textAlign = "center";
 		tCtx.textBaseline = "middle";
 		tCtx.fillStyle = "black";
-		tCtx.fillText(JSON.parse(text.content), width / 2, height / 2);
+		tCtx.fillText(icon.innerText || JSON.parse(text.content), width / 2, height / 2);
 
 		//console.log(tCtx.canvas.toDataURL());
 
@@ -67,7 +83,7 @@ iconpuzzle = (function() {
 		map.hint.x = new Array(width);
 
 		// Convert pixel colours to grayscale and if the luma byte has
-		// left than half value (i.e. towards black) then set that as the
+		// less than half value (i.e. towards black) then set that as the
 		// accepted answer. We're effectively reducing the bit-depth to 1.
 		pixelData = tCtx.getImageData(0, 0, width, height).data;
 		for (i = 0; i < pixelData.length; i += 4) {
@@ -78,11 +94,13 @@ iconpuzzle = (function() {
 				map.mask[y] = (new Array(width)).fill(false);
 			}
 
+			// https://en.wikipedia.org/wiki/Relative_luminance
+			// https://stackoverflow.com/a/596241
 			luma = (pixelData[i + 0] * 0.2126)
 				+ (pixelData[i + 1] * 0.7152)
 				+ (pixelData[i + 2] * 0.0722);
 
-			map.mask[y][x] = luma < 127;
+			map.mask[y][x] = luma < 213; // lose approx brightest 1/3
 
 			//Count consecutive cells
 			// First ensure there are appropriate arrays to increment, creating them if necessary
@@ -124,11 +142,9 @@ iconpuzzle = (function() {
 
 	function buildTable (answerMap) {
 		var table = document.createElement("table"),
-			tr, th;
+			tr = table.appendChild(document.createElement("tr")), 
+			th = tr.appendChild(document.createElement("th"));
 
-		tr = table.appendChild(document.createElement("tr"));
-
-		th = tr.appendChild(document.createElement("th"));
 		th.innerText = answerMap.hint.x.length + "/" + answerMap.hint.y.length;
 
 		answerMap.hint.x.forEach(function (header) {
@@ -161,10 +177,10 @@ iconpuzzle = (function() {
 			icon = (typeof element === "string" && document.getElementById(element)) || element;
 			tableParent = typeof parentName === "string" && document.getElementById(parentName) || parentName;
 
-			icon.classList.remove("show");
+			icon.className = "";
 			tableParent.classList.remove("show");
 
-			setRandom();
+			setRandom(icon);
 
 			tableParent.innerHTML = "";
 			tableParent.appendChild(buildTable(convertToMap()));

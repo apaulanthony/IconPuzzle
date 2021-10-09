@@ -1,6 +1,6 @@
 {
   "name": "iconpuzzle",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Solve the puzzle by drawing the icon. The numbers in the headers describe the number of consecutive cells in that row or column.",
   "main": "iconpuzzle.html",
   "repository": {
@@ -13,9 +13,9 @@
     "url": "https://github.com/apaulanthony/IconPuzzle/issues"
   },
   "homepage": "https://github.com/apaulanthony/IconPuzzle",
-  "dependencies": {},
   "devDependencies": {
-    "sass": "^1.1.1",
-    "uglify-js": "^3.3.18"
+    "eslint": "^7.32.0",
+    "sass": "^1.42.1",
+    "uglify-js": "^3.14.2"
   }
 }
