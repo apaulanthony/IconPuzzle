@@ -148,14 +148,14 @@ iconpuzzle = (function() {
 		th.innerText = answerMap.hint.x.length + "/" + answerMap.hint.y.length;
 
 		answerMap.hint.x.forEach(function (header) {
-			th = tr.appendChild(document.createElement("th"));
+			var th = tr.appendChild(document.createElement("th"));
 			th.innerText = header.join(", ");
 		});
 
 		answerMap.mask.forEach(function (row, y) {
-			tr = table.appendChild(document.createElement("tr"));
+			var tr = table.appendChild(document.createElement("tr")),
+				th = tr.appendChild(document.createElement("th"));
 
-			th = tr.appendChild(document.createElement("th"));
 			th.innerText = answerMap.hint.y[y].join(", ");
 
 			row.forEach(function(col, x) {
