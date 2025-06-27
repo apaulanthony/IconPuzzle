@@ -14,8 +14,10 @@
   },
   "homepage": "https://github.com/apaulanthony/IconPuzzle",
   "devDependencies": {
-    "eslint": "^7.32.0",
-    "sass": "^1.42.1",
-    "uglify-js": "^3.14.2"
+    "sass": "^1.89.2",
+    "uglify-js": "^3.19.3",
+    "eslint": "^9.29.0"
+  },
+  "dependencies": {
   }
 }
