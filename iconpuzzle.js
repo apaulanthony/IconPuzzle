@@ -1,7 +1,7 @@
 /*globals iconpuzzle:true */
 /* exported iconpuzzle */ 
 iconpuzzle = (function() {
-	var icons = [
+	const icons = [
 			"❤️",
 			"✨",
 			"✔️",
@@ -39,15 +39,16 @@ iconpuzzle = (function() {
 			{ className: "fas fa-tree"},
 			{ className: "fas fa-trophy"}
 			*/
-		], icon, tableParent;
+		];
+	let icon, tableParent;
 
 	function setRandom (icon) {
-		var image = icons[Math.floor(Math.random() * icons.length)];
+		const image = icons[Math.floor(Math.random() * icons.length)];
 		
 		icon.innerText = typeof image === "string" ? image : "";
 
 		if (typeof image !== "string") {
-			Object.keys(image).forEach(function (k) { icon[k] = image[k]; });
+			Object.keys(image).forEach(k => { icon[k] = image[k]; });
 		}
 	}
 
@@ -56,12 +57,11 @@ iconpuzzle = (function() {
 	}
 
 	function convertToMap () {
-		var text = window.getComputedStyle(icon, ":before"),
+		const text = window.getComputedStyle(icon, ":before"),
 			tCtx = document.createElement("canvas").getContext("2d"),
-			height, width, pixelData, i, x, y, luma,
-			map = {hint: {x: [[0]], y: [[0]]}, mask: []};
-
-		height = width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")); // px equivalent of 1em or whatever icon height is
+			map = {hint: {x: [[0]], y: [[0]]}, mask: []},		
+			width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")), // px equivalent of 1em or whatever icon height is
+			height = width;
 
 		//Prepare canvas
 		tCtx.canvas.width = width;
@@ -85,10 +85,11 @@ iconpuzzle = (function() {
 		// Convert pixel colours to grayscale and if the luma byte has
 		// less than half value (i.e. towards black) then set that as the
 		// accepted answer. We're effectively reducing the bit-depth to 1.
-		pixelData = tCtx.getImageData(0, 0, width, height).data;
-		for (i = 0; i < pixelData.length; i += 4) {
-			y = Math.floor((i / 4) / width);
-			x = (i / 4) % width;
+		const pixelData = tCtx.getImageData(0, 0, width, height).data;
+
+		for (let i = 0; i < pixelData.length; i += 4) {
+			let y = Math.floor((i / 4) / width),
+				x = (i / 4) % width;
 
 			if (!map.mask[y]) {
 				map.mask[y] = (new Array(width)).fill(false);
@@ -96,7 +97,7 @@ iconpuzzle = (function() {
 
 			// https://en.wikipedia.org/wiki/Relative_luminance
 			// https://stackoverflow.com/a/596241
-			luma = (pixelData[i + 0] * 0.2126)
+			const luma = (pixelData[i + 0] * 0.2126)
 				+ (pixelData[i + 1] * 0.7152)
 				+ (pixelData[i + 2] * 0.0722);
 
@@ -141,24 +142,24 @@ iconpuzzle = (function() {
 	}
 
 	function buildTable (answerMap) {
-		var table = document.createElement("table"),
+		const table = document.createElement("table"),
 			tr = table.appendChild(document.createElement("tr")), 
 			th = tr.appendChild(document.createElement("th"));
 
 		th.innerText = answerMap.hint.x.length + "/" + answerMap.hint.y.length;
 
-		answerMap.hint.x.forEach(function (header) {
-			var th = tr.appendChild(document.createElement("th"));
+		answerMap.hint.x.forEach(header => {
+			const th = tr.appendChild(document.createElement("th"));
 			th.innerText = header.join(", ");
 		});
 
-		answerMap.mask.forEach(function (row, y) {
-			var tr = table.appendChild(document.createElement("tr")),
+		answerMap.mask.forEach((row, y) => {
+			const tr = table.appendChild(document.createElement("tr")),
 				th = tr.appendChild(document.createElement("th"));
 
 			th.innerText = answerMap.hint.y[y].join(", ");
 
-			row.forEach(function(col, x) {
+			row.forEach((col, x) => {
 				var td = tr.appendChild(document.createElement("td"));
 
 				if (answerMap.mask[y][x]) {
@@ -190,7 +191,7 @@ iconpuzzle = (function() {
 		},
 		show: function () {
 			if (icon.classList.contains("show") || confirm("Are you sure?")) {
-				[icon, tableParent].forEach(function(element){
+				[icon, tableParent].forEach(element => {
 					element.classList.toggle("show");
 				});
 			}
