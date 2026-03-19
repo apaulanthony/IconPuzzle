@@ -13,6 +13,11 @@
     "url": "https://github.com/apaulanthony/IconPuzzle/issues"
   },
   "homepage": "https://github.com/apaulanthony/IconPuzzle",
+  "scripts": {
+    "run": "open iconpuzzle.html",
+    "build": "sass --style=compressed iconpuzzle.scss min/iconpuzzle.css && uglifyjs iconpuzzle.js -o min/iconpuzzle.js",
+    "lint": "eslint iconpuzzle.js"
+  },
   "devDependencies": {
     "sass": "^1.89.2",
     "uglify-js": "^3.19.3",
