@@ -9,40 +9,20 @@ iconpuzzle = (function() {
 			"🔪",
 			"⚔️",
 			"🍒",
-			"📞"
-			/*
-			{ className: "fas fa-anchor"},
-			{ className: "fab fa-android"},
-			{ className: "fab fa-apple"},
-			{ className: "fas fa-bath"},
-			{ className: "fas fa-bed"},
-			{ className: "fas fa-beer"},
-			{ className: "fas fa-birthday-cake"},
-			{ className: "fas fa-bolt"},
-			{ className: "fas fa-bug"},
-			{ className: "fas fa-camera-retro"},
-			{ className: "fas fa-chess-board"},
-			{ className: "fas fa-chess-rook"},
-			{ className: "fas fa-chess-queen"},
-			{ className: "fas fa-cog"},
-			{ className: "fas fa-cogs"},
-			{ className: "fas fa-cubes"},
-			{ className: "fab fa-fort-awesome"},
-			{ className: "fas fa-gamepad"},
-			{ className: "fas fa-music"},
-			{ className: "fas fa-paper-plane"},
-			{ className: "fas fa-paperclip"},
-			{ className: "fas fa-paw"},
-			{ className: "fas fa-puzzle-piece"},
-			{ className: "fas fa-shield-alt"},
-			{ className: "fas fa-star"},
-			{ className: "fas fa-tree"},
-			{ className: "fas fa-trophy"}
-			*/
+			"📞",
+			"📺",
+			"📱",
+			"💻",
+			"💡",
+			"💣",
+			"💎",
+			"👑",
+			"👻",
+			"👾"
 		];
 	let icon, tableParent;
 
-	function setRandom (icon) {
+	const setRandom = icon => {
 		const image = icons[Math.floor(Math.random() * icons.length)];
 		
 		icon.innerText = typeof image === "string" ? image : "";
@@ -52,20 +32,18 @@ iconpuzzle = (function() {
 		}
 	}
 
-	function selected () {
+	const selected = () => {
 		this.classList.toggle("selected");
 	}
 
-	function convertToMap () {
+	const convertToMap = () => {
 		const text = window.getComputedStyle(icon, ":before"),
-			tCtx = document.createElement("canvas").getContext("2d"),
+			tCtx = new OffscreenCanvas(width, height).getContext("2d"),
 			map = {hint: {x: [[0]], y: [[0]]}, mask: []},		
 			width = parseInt(window.getComputedStyle(icon).getPropertyValue("font-size")), // px equivalent of 1em or whatever icon height is
 			height = width;
 
 		//Prepare canvas
-		tCtx.canvas.width = width;
-		tCtx.canvas.height = height;
 		tCtx.fillStyle = "white";
 		tCtx.fillRect(0, 0, width, height);
 
@@ -141,7 +119,7 @@ iconpuzzle = (function() {
 		return map;
 	}
 
-	function buildTable (answerMap) {
+	const buildTable = (answerMap) => {
 		const table = document.createElement("table"),
 			tr = table.appendChild(document.createElement("tr")), 
 			th = tr.appendChild(document.createElement("th"));
@@ -174,7 +152,7 @@ iconpuzzle = (function() {
 	}
 
 	return {
-		new: function (element, parentName) {
+		new: (element, parentName) => {
 			icon = (typeof element === "string" && document.getElementById(element)) || element;
 			tableParent = typeof parentName === "string" && document.getElementById(parentName) || parentName;
 
@@ -186,10 +164,10 @@ iconpuzzle = (function() {
 			tableParent.innerHTML = "";
 			tableParent.appendChild(buildTable(convertToMap()));
 		},
-		setSize: function (value) {
+		setSize: value => {
 			icon.style.fontSize = value;
 		},
-		show: function () {
+		show: () => {
 			if (icon.classList.contains("show") || confirm("Are you sure?")) {
 				[icon, tableParent].forEach(element => {
 					element.classList.toggle("show");
