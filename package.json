@@ -23,6 +23,8 @@
     "uglify-js": "^3.19.3",
     "eslint": "^9.29.0"
   },
-  "dependencies": {
+  "dependencies": {},
+  "allowScripts": {
+    "@parcel/watcher@2.5.1": true
   }
 }
